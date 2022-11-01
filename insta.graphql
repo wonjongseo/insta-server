@@ -1,0 +1,65 @@
+mutation {
+  createAccount(
+    firstName: "K"
+    lastName: "K"
+    email: "K"
+    password: "123123"
+    username: "K"
+  ) {
+    ok
+  }
+}
+mutation {
+  login(username: "A", password: "123123") {
+    token
+    ok
+    error
+  }
+}
+query {
+  seeProfile(username: "username") {
+    user {
+      totalFollowing
+      totalFollower
+      id
+      isMe
+      isFollowing
+    }
+    error
+    ok
+  }
+}
+
+mutation {
+  followUser(username: "B") {
+    ok
+    error
+  }
+}
+
+query {
+  seeFollowers(username: "A", page: 1) {
+    followers {
+      username
+    }
+  }
+}
+
+query {
+  seeFollowings(username: "username", lastId: 1) {
+    ok
+    followings {
+      username
+    }
+  }
+}
+
+query {
+  searchUsers(keywords: "u") {
+    ok
+    error
+    user {
+      id
+    }
+  }
+}

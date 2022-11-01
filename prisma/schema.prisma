@@ -1,0 +1,96 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int  @default(autoincrement()) @id
+  firstName String
+  lastName String?
+  username String @unique
+  email String @unique
+  password String
+  bio String?
+  likes Like[]
+  avatar String?
+  comments Comment[] 
+  followers User[]   @relation("FollowRelation")
+  following User[]   @relation("FollowRelation")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  photos Photo[]
+  rooms Room[]
+  messages Message[]
+}
+
+model Photo {
+ id Int  @default(autoincrement()) @unique @id
+ userId Int
+ user User @relation(fields: [userId], references: [id],onDelete: Cascade)
+ file String
+ caption String?
+ hashtags Hashtag[]
+ likes Like[]
+ comments Comment[]
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+}
+
+model Hashtag {
+  id Int @default(autoincrement()) @id
+  hashtag String @unique
+  photos Photo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Like {
+  id Int @default(autoincrement()) @id
+  user User @relation(references: [id],fields: [userId] ,onDelete: Cascade)
+  photo Photo @relation(references: [id], fields: [photoId],onDelete: Cascade) 
+  userId Int
+  photoId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([photoId, userId])
+}
+
+model Comment {
+  id Int @default(autoincrement()) @id
+  user User  @relation(fields: [userId], references: [id],onDelete: Cascade)
+  userId Int
+  photo Photo @relation(fields: [photoId], references: [id],onDelete: Cascade)
+  photoId Int
+  payload String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Room {
+  id Int @id @default(autoincrement())
+  users User[]
+  messages Message[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Message { 
+   id Int @id @default(autoincrement())
+   payload String
+   user User @relation(references: [id], fields: [userId],onDelete: Cascade)
+   userId Int
+   room Room @relation(references: [id], fields: [roomId],onDelete: Cascade)
+   roomId Int
+   read Boolean @default(false)
+   createdAt DateTime @default(now())
+   updatedAt DateTime @updatedAt
+}

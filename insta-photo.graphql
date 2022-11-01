@@ -1,0 +1,62 @@
+mutation ($file: Upload!, $caption: String!) {
+  uploadPhoto(file: $file, caption: $caption) {
+    ok
+    error
+    photo {
+      id
+    }
+  }
+}
+mutation ($photoId: Int!, $file: Upload!, $caption: String!) {
+  editPhoto(photoId: $photoId, file: $file, caption: $caption) {
+    ok
+  }
+}
+
+query {
+  seePhoto(photoId: 1) {
+    ok
+    error
+    photo {
+      file
+    }
+  }
+}
+query {
+  seeHashtag(hastag: "#aaa") {
+    ok
+    error
+    hastag {
+      hastag
+    }
+  }
+}
+query {
+  seeHashtag(hashtag: "#aaaa") {
+    ok
+    error
+    hashtag {
+      hashtag
+      photos(page: 1) {
+        id
+      }
+    }
+  }
+}
+
+# like
+
+mutation {
+  toggleLike(photoId: 9) {
+    ok
+    false
+  }
+}
+
+query {
+  seePhotoLikes(photoId: 9) {
+    ok
+    false
+    users
+  }
+}
